@@ -1,0 +1,42 @@
+{{ define "notes/index.html" }}
+{{ template "layouts/header.html" . }}
+
+
+{{ with .notes }}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Create a New Note</h5>
+                    <a href="/notes/new" class="btn btn-light btn-sm">Create Note</a>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Name</th>
+                                <th>Content</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{ range . }}
+                            <tr>
+                                <td>{{ .Name }}</td>
+                                <td>{{ .Content }}</td>
+                                <td><a href="/notes/{{ .ID }}" class="btn btn-sm btn-outline-primary">View</a></td>
+                            </tr>
+                            {{ end }}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
+
+
+{{ template "layouts/footer.html" . }}
+{{ end }}
