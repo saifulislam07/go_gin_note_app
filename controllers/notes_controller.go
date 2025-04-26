@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"hello_gin/models"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,4 +32,64 @@ func NotesCreate(c *gin.Context) {
 	models.NotesCreate(name, content)
 
 	c.Redirect(http.StatusSeeOther, "/notes")
+}
+
+func NotesShow(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		fmt.Printf("Error converting id: %v\n", err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	note := models.NotesFind(id)
+
+	c.HTML(http.StatusOK,
+		"notes/show.html",
+		gin.H{
+			"note": note,
+		},
+	)
+}
+
+func NotesEdit(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		fmt.Printf("Error converting id: %v\n", err)
+	}
+
+	note := models.NotesFind(id)
+
+	c.HTML(http.StatusOK,
+		"notes/edit.html",
+		gin.H{
+			"note": note,
+		},
+	)
+}
+
+func NotesUpdate(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		fmt.Printf("Error converting id: %v\n", err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	note := models.NotesFind(id)
+	if note == nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	name := c.PostForm("name")
+	content := c.PostForm("content")
+
+	note.Name = name
+	note.Content = content
+
+	c.Redirect(http.StatusSeeOther, "/notes/"+idStr)
 }
