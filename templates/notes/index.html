@@ -32,12 +32,13 @@
                                     <a href="/notes/edit/{{ .ID }}" class="btn btn-sm btn-outline-primary">
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                    <form action="/notes/{{ .ID }}" method="POST" class="d-inline">
-                                        <input type="hidden" name="_method" value="DELETE">
+                                    <form action="/notes/{{ .ID }}/delete" method="POST" class="d-inline">
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </form>
+
+
                                 </td>
                             </tr>
                             {{ end }}

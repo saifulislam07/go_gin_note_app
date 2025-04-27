@@ -26,6 +26,7 @@ func main() {
 	r.GET("/notes/:id", controllers.NotesShow)
 	r.GET("/notes/edit/:id", controllers.NotesEdit)
 	r.POST("/notes/edit/:id", controllers.NotesUpdate)
+	r.POST("/notes/:id/delete", controllers.NotesDelete)
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "views/index.html", gin.H{

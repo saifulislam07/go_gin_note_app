@@ -91,5 +91,37 @@ func NotesUpdate(c *gin.Context) {
 	note.Name = name
 	note.Content = content
 
+	// *** Save the changes to the database ***
+	if err := models.DB.Save(note).Error; err != nil {
+		fmt.Printf("Error saving note: %v\n", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
 	c.Redirect(http.StatusSeeOther, "/notes/"+idStr)
+}
+
+func NotesDelete(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		fmt.Printf("Error converting id: %v\n", err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	note := models.NotesFind(id)
+	if note == nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	if err := models.DB.Delete(&note).Error; err != nil {
+		fmt.Printf("Error deleting note: %v\n", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	// Redirect to notes list after deleting
+	c.Redirect(http.StatusSeeOther, "/notes")
 }

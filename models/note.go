@@ -27,8 +27,17 @@ func NotesCreate(name string, content string) *Note {
 	return &entry
 }
 
+// func NotesFind(id uint64) *Note {
+// 	var note Note
+// 	DB.Where("id = ?", id).First(&note)
+// 	return &note
+// }
+
 func NotesFind(id uint64) *Note {
 	var note Note
-	DB.Where("id = ?", id).First(&note)
+	result := DB.First(&note, id)
+	if result.Error != nil {
+		return nil
+	}
 	return &note
 }
