@@ -1,0 +1,10 @@
+{{ define "home/index.html" }}
+{{ template "layouts/header.html" . }}
+<h1>{{ .title }}</h1>
+
+<p>Welcome to our service! Please log in or sign up to continue.</p>
+<p>
+    <a href="/login">Log In</a> | <a href="/signup">Sign Up</a>
+</p>
+{{ template "layouts/footer.html" . }}
+{{ end }}
