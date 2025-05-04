@@ -21,9 +21,6 @@ func ConnectDatabase() {
 }
 
 func DBMigrate() {
-	err := DB.AutoMigrate(&Note{})
-	if err != nil {
-		panic("❌ Migration failed: " + err.Error())
-	}
-	log.Println("✅ Database migration complete!")
+	DB.AutoMigrate(&Note{})
+	DB.AutoMigrate(&User{})
 }

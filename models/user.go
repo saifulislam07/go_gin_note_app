@@ -29,3 +29,25 @@ func UserCreate(email string, password string) *User {
 	DB.Create(&entry)
 	return &entry
 }
+
+func UserFind(id uint64) *User {
+	var user User
+	result := DB.Where("id = ?", id).First(&user)
+	if result.Error != nil {
+		return nil
+	}
+	return &user
+}
+
+func UserCheck(email string, password string) *User {
+	var user User
+	DB.Where("username = ?", email).First(&user)
+	if user.ID == 0 {
+		return nil
+	}
+
+	if !helpers.CheckPasswordHash(password, user.Password) {
+		return nil
+	}
+	return &user
+}

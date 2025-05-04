@@ -69,3 +69,37 @@ func Signup(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/")
 	}
 }
+
+func Login(c *gin.Context) {
+	email := c.PostForm("email")
+	password := c.PostForm("password")
+	user := models.UserCheck(email, password)
+
+	if user.ID == 0 {
+		c.HTML(
+			http.StatusOK,
+			"home/login.html",
+			gin.H{
+				"alert": "Invalid credentials",
+			},
+		)
+		return
+	} else {
+		helpers.SessionSet(c, user.ID)
+		c.Redirect(http.StatusMovedPermanently, "/")
+	}
+}
+
+func Logout(c *gin.Context) {
+	helpers.SessionClear(c)
+
+	c.HTML(
+		http.StatusOK,
+		"home/login.html",
+		gin.H{
+			"alert": "Logged out",
+		},
+	)
+
+	c.Redirect(http.StatusMovedPermanently, "/")
+}

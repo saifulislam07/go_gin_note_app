@@ -2,10 +2,13 @@ package main
 
 import (
 	"hello_gin/controllers"
+	"hello_gin/middlewares"
 	"hello_gin/models"
 	"log"
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/memstore"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,11 +23,16 @@ func main() {
 	models.ConnectDatabase()
 	models.DBMigrate()
 
+	store := memstore.NewStore([]byte("secret"))
+	r.Use(sessions.Sessions("notes", store))
+
+	r.Use(middlewares.AuthenticateUser())
+
 	r.GET("/login", controllers.LoginPage)
 	r.GET("/signup", controllers.SignupPage)
 
 	r.POST("/login", controllers.Login)
-	r.POST("/signup", controllers.SignupCreate)
+	r.POST("/signup", controllers.Signup)
 	r.POST("/logout", controllers.Logout)
 
 	r.GET("/notes", controllers.NotesIndex)
@@ -37,8 +45,8 @@ func main() {
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "home/index.html", gin.H{
-			"title":   "Notes application",
-			"message": "Welcome to your notes app!",
+			"title":     "Notes application",
+			"logged_in": (c.GetUint64("user_id") > 0),
 		})
 	})
 
